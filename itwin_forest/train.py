@@ -1,8 +1,8 @@
-"""Train and evaluate Kaleido (or its ablations) on one TreeFinder scenario.
+"""Train and evaluate iTwin-Forest (or its ablations) on one TreeFinder scenario.
 
-    python -m kaleido.train --data_root datasets --scenario co --seed 2025                       # Kaleido
-    python -m kaleido.train --data_root datasets --scenario co --seed 2025 --no_bank --cons 0    # DINOv2 + decoder only
-    python -m kaleido.train --data_root datasets --scenario co --seed 2025 --cons 0              # + statistics bank, no consistency loss
+    python -m itwin_forest.train --data_root datasets --scenario co --seed 2025                       # iTwin-Forest
+    python -m itwin_forest.train --data_root datasets --scenario co --seed 2025 --no_bank --cons 0    # DINOv2 + decoder only
+    python -m itwin_forest.train --data_root datasets --scenario co --seed 2025 --cons 0              # + statistics bank, no consistency loss
 
 Recipe: AdamW (weight decay 0.01), decoder lr 1e-4 and encoder lr = encoder_mult x 1e-4, ExponentialLR(0.95) per epoch, batch size 32,
 at most 100 epochs, early stopping (patience 10) on the validation mask loss (BCE + Dice), bf16 autocast on GPU. The checkpoint with the lowest
@@ -24,7 +24,7 @@ from .metrics import Pooled
 from .model import Dinov2Seg, param_groups
 from .stats_bank import compute_band_stats, load_bank
 
-log = logging.getLogger("kaleido")
+log = logging.getLogger("itwin_forest")
 
 
 def get_args(argv=None):
@@ -34,7 +34,7 @@ def get_args(argv=None):
     ap.add_argument("--seed", type=int, default=2025, help="training seed")
     ap.add_argument("--split_seed", type=int, default=None, help="override the seed that selects the split")
     ap.add_argument("--out_dir", default="runs")
-    ap.add_argument("--tag", default="kaleido")
+    ap.add_argument("--tag", default="itwin_forest")
     ap.add_argument("--lr", type=float, default=1e-4)
     ap.add_argument("--encoder_mult", type=float, default=0.01, help="encoder lr = encoder_mult x lr (the paper reports 0.1 and 0.01)")
     ap.add_argument("--no_bank", action="store_true", help="no statistics-bank restyling")

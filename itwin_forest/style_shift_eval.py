@@ -1,7 +1,7 @@
 """Robustness to controlled spectral shifts, without retraining: a trained checkpoint is evaluated on the test split after the four bands of
 every test tile are perturbed (brightness, gamma, colour cast, contrast, NIR gain; NDVI recomputed). Reports the pooled dead-tree F1 per shift.
 
-    python -m kaleido.style_shift_eval --data_root datasets --scenario co --ckpt runs/co_kaleido_s2025/best.pth --out shift.json
+    python -m itwin_forest.style_shift_eval --data_root datasets --scenario co --ckpt runs/co_itwin_forest_s2025/best.pth --out shift.json
 """
 import argparse
 import json

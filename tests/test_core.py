@@ -2,9 +2,9 @@ import numpy as np
 import pandas as pd
 import torch
 
-from kaleido.data import EAST, WEST, partition
-from kaleido.losses import consistency_loss, mask_loss
-from kaleido.stats_bank import StatBank, tile_stats, valid_mask
+from itwin_forest.data import EAST, WEST, partition
+from itwin_forest.losses import consistency_loss, mask_loss
+from itwin_forest.stats_bank import StatBank, tile_stats, valid_mask
 
 
 def fake_info(n_sites=60, tiles=5):

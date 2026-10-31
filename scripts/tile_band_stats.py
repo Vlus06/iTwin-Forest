@@ -7,8 +7,8 @@ import os
 import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-from kaleido.data import TILE_DIR, read_info   # noqa: E402
-from kaleido.stats_bank import compute_band_stats   # noqa: E402
+from itwin_forest.data import TILE_DIR, read_info   # noqa: E402
+from itwin_forest.stats_bank import compute_band_stats   # noqa: E402
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()

@@ -1,9 +1,9 @@
-# Kaleido
+# iTwin-Forest
 
 Single-source domain generalisation for dead-tree segmentation on aerial imagery ([TreeFinder](https://github.com/zhwang0/treefinder) / NAIP, 224×224 tiles).
 Train on one region, test on regions never seen during training.
 
-Kaleido = **DINOv2 + decoder** + **spectral statistics bank** + **consistency loss**.
+iTwin-Forest = **DINOv2 + decoder** + **spectral statistics bank** + **consistency loss**.
 
 ![overview](figures/arch_overview.png)
 
@@ -52,10 +52,10 @@ dead-tree class at threshold 0.5.
 
 ```bash
 python scripts/tile_band_stats.py --data_root datasets            # optional: otherwise built on the first run
-python -m kaleido.train --data_root datasets --scenario co --seed 2025                          # Kaleido
-python -m kaleido.train --data_root datasets --scenario co --seed 2025 --encoder_mult 0.1       # Kaleido (m = 0.1)
-python -m kaleido.train --data_root datasets --scenario co --seed 2025 --no_bank --cons 0 --tag plain   # DINOv2 + decoder only
-python -m kaleido.train --data_root datasets --scenario co --seed 2025 --cons 0 --tag bank      # + statistics bank, no consistency loss
+python -m itwin_forest.train --data_root datasets --scenario co --seed 2025                          # iTwin-Forest
+python -m itwin_forest.train --data_root datasets --scenario co --seed 2025 --encoder_mult 0.1       # iTwin-Forest (m = 0.1)
+python -m itwin_forest.train --data_root datasets --scenario co --seed 2025 --no_bank --cons 0 --tag plain   # DINOv2 + decoder only
+python -m itwin_forest.train --data_root datasets --scenario co --seed 2025 --cons 0 --tag bank      # + statistics bank, no consistency loss
 bash scripts/run_all.sh datasets                                  # 5 scenarios × 3 seeds
 python scripts/aggregate.py runs                                  # mean ± std over seeds
 ```
@@ -63,7 +63,7 @@ python scripts/aggregate.py runs                                  # mean ± std 
 Colour-shift robustness of a trained checkpoint (no retraining):
 
 ```bash
-python -m kaleido.style_shift_eval --data_root datasets --scenario co --ckpt runs/co_kaleido_s2025/best.pth --out shift.json
+python -m itwin_forest.style_shift_eval --data_root datasets --scenario co --ckpt runs/co_itwin_forest_s2025/best.pth --out shift.json
 ```
 
 Recipe: AdamW (weight decay 0.01), decoder lr 1e-4, ExponentialLR 0.95, batch 32, ≤100 epochs, early stopping (patience 10) on the
@@ -73,7 +73,7 @@ validation mask loss, bf16 autocast for training, fp32 for the final test evalua
 
 Dead-tree F1 (%), mean ± sample std over three training seeds (2025, 2024, 2023).
 
-| Scenario | DINOv2 + decoder (m = 0.01) | Kaleido (m = 0.01) | TreeMortSeg (re-run from the released code) |
+| Scenario | DINOv2 + decoder (m = 0.01) | iTwin-Forest (m = 0.01) | TreeMortSeg (re-run from the released code) |
 |---|---|---|---|
 | Random | 66.14 ± 0.48 | 65.65 ± 0.26 | 63.31 ± 2.67 |
 | CO → non-CO | 26.34 ± 0.89 | 27.27 ± 0.91 | 17.83 ± 0.84 |
@@ -82,18 +82,18 @@ Dead-tree F1 (%), mean ± sample std over three training seeds (2025, 2024, 2023
 | Site-disjoint | 43.58 ± 5.34 | 43.20 ± 5.10 | 32.99 ± 1.87 |
 
 The statistics bank and the consistency loss change the F1 only slightly; their effect is clearer under controlled colour shifts of the test tiles
-(`kaleido/style_shift_eval.py`), e.g. a red/blue colour cast (R×1.2, B×0.8) on CO → non-CO.
+(`itwin_forest/style_shift_eval.py`), e.g. a red/blue colour cast (R×1.2, B×0.8) on CO → non-CO.
 
 ## Layout
 
 ```
-kaleido/data.py            tiles, scenarios and splits
-kaleido/stats_bank.py      statistics bank and restyling
-kaleido/model.py           DINOv2 + decoder
-kaleido/losses.py          mask loss and consistency loss
-kaleido/metrics.py         pooled pixel metrics
-kaleido/train.py           training / evaluation
-kaleido/style_shift_eval.py   controlled colour-shift evaluation
+itwin_forest/data.py            tiles, scenarios and splits
+itwin_forest/stats_bank.py      statistics bank and restyling
+itwin_forest/model.py           DINOv2 + decoder
+itwin_forest/losses.py          mask loss and consistency loss
+itwin_forest/metrics.py         pooled pixel metrics
+itwin_forest/train.py           training / evaluation
+itwin_forest/style_shift_eval.py   controlled colour-shift evaluation
 scripts/                   band-statistics table, run-all, aggregation
 tests/test_core.py         unit tests (splits, restyling, losses)
 ```
@@ -101,7 +101,7 @@ tests/test_core.py         unit tests (splits, restyling, losses)
 ## Acknowledgements
 
 Data: TreeFinder (Wang et al.), CC BY 4.0. Encoder weights: DINOv2 (Oquab et al.), loaded from `facebook/dinov2-base` via Hugging Face Transformers.
-This repository contains only the code of Kaleido.
+This repository contains only the code of iTwin-Forest.
 
 ## License
 
